@@ -1,10 +1,12 @@
 
 .header {
     text-align: center;
-    background-color: royalblue;
 }
 
 .header h2 {
     padding: 1%;
-    color: #fff;
+}
+
+.header button {
+    float:right;
 }
