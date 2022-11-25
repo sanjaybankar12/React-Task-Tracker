@@ -23,6 +23,8 @@ const App = () => {
     }
 ]);
 
+  const [showAddTaskForm,setShowAddTaskForm] = useState(false);
+
   //Delete Task
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
@@ -33,7 +35,7 @@ const App = () => {
   }
 
   const toggleAddTaskForm = () => {
-
+    setShowAddTaskForm(!showAddTaskForm);
   }
 
   const onAdd = (task) => {
@@ -44,8 +46,8 @@ const App = () => {
 
   return (
     <div className="container1">
-        <Header color="#fff" bgColor='steelblue' onClick={toggleAddTaskForm} title='Task Tracker' ></Header>
-        <AddTask onAddTask={onAdd}></AddTask>
+        <Header color="#fff" showAdd={showAddTaskForm}  bgColor='steelblue' onToggleAdd={toggleAddTaskForm} title='Task Tracker' ></Header>
+        {showAddTaskForm ? <AddTask onAddTask={onAdd}></AddTask>:''}
         {tasks.length > 0 ? (<Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask}></Tasks>):'No Task to display'}
         <Footer></Footer>
     </div>
