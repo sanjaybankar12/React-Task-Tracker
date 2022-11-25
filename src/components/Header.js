@@ -5,15 +5,11 @@ import Button from './Button';
 
 import PropTypes from 'prop-types';
 
-const Header = (props) => {
-
-    const onClick = (e) => {
-
-    }
+const Header = ({title, color, bgColor, onClick}) => {    
 
     return(
         <header className='header'>            
-            <h2 style={{color:props.color,backgroundColor:props.bgColor}}>{props.title}<Button onClick={onClick} color='green' text='Add' /></h2>
+            <h2 style={{color:color,backgroundColor:bgColor}}>{title}<Button onClick={onClick} color='green' text='Add' /></h2>
         </header>        
     );
 };

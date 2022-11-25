@@ -15,8 +15,6 @@ header {
   color: #fff;
   text-align: center;
   padding: 2%;
-  position: fixed;
-  bottom: 0;
   width: 100%;
 }
 
@@ -31,11 +29,26 @@ header {
   margin: 10px 0;
 }
 
+.reminder {
+  background-color: gold;
+}
+
 .task p{
     margin: 0;
     font-size: 14px;
 }
 
+.add-form input[type="checkbox"] {
+  height: 15px;
+  width: 15px;
+  margin: 5px 20px;
+}
+
 .task h5{
   margin-bottom: 4px;
+}
+
+.add-form {
+  width:70%;
+  margin: 2% auto 5% auto;
 }

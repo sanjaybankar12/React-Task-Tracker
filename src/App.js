@@ -2,6 +2,7 @@ import './App.css';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
 import Footer from './components/Footer';
+import AddTask from './components/AddTask';
 import React, {useState} from 'react';
 
 
@@ -22,10 +23,30 @@ const App = () => {
     }
 ]);
 
+  //Delete Task
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  }
+
+  const toggleReminder = (id) => {
+    setTasks(tasks.map((task) => ((task.id === id) ? {...task, reminder:!task.reminder} : task)));
+  }
+
+  const toggleAddTaskForm = () => {
+
+  }
+
+  const onAdd = (task) => {
+    let id = Math.floor(Math.random()*1000) + 1;
+    let newTask = {id, ...task};
+    setTasks([...tasks,newTask]);
+  }
+
   return (
     <div className="container1">
-        <Header color="#fff" bgColor='steelblue' title='Task Tracker' ></Header>
-        <Tasks tasks={tasks}></Tasks>
+        <Header color="#fff" bgColor='steelblue' onClick={toggleAddTaskForm} title='Task Tracker' ></Header>
+        <AddTask onAddTask={onAdd}></AddTask>
+        {tasks.length > 0 ? (<Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask}></Tasks>):'No Task to display'}
         <Footer></Footer>
     </div>
   );
