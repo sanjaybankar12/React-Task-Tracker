@@ -9,7 +9,7 @@ const Header = ({title, color, bgColor, onToggleAdd,showAdd}) => {
 
     return(
         <header className='header'>            
-            <h2 style={{color:color,backgroundColor:bgColor}}>{title}<Button onClick={onToggleAdd} color='green' text={showAdd ? 'Close' : 'Add'} /></h2>
+            <h2 style={{color:color,backgroundColor:bgColor}}>{title}<Button onClick={onToggleAdd} color={showAdd ? 'red': 'green'} text={showAdd ? 'Close' : 'Add'} /></h2>
         </header>        
     );
 };

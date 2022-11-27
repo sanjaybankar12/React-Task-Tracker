@@ -3,30 +3,35 @@ import Header from './components/Header';
 import Tasks from './components/Tasks';
 import Footer from './components/Footer';
 import AddTask from './components/AddTask';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 
 const App = () => {
 
-  const [tasks, setTasks] = useState([
-    {
-        id:1,
-        text:'Shopping is already completed but some remaining we will plan for weekend',
-        day:'23 Nov 22',
-        reminder:false
-    },
-    {
-        id:2,
-        text:'Pragati Express EV coach id booked for 1 dec 22',
-        day:'01 Dec 22',
-        reminder:true
-    }
-]);
+  const [tasks, setTasks] = useState([]);
 
   const [showAddTaskForm,setShowAddTaskForm] = useState(false);
 
+  useEffect(() => {
+      const getTasks = async () => {
+        const tasksFromServer = await fetchTasks();
+        setTasks(tasksFromServer);
+      }
+      getTasks();
+  },[]);
+
+  //fetch tasks
+  const fetchTasks = async () => {
+    const res = await fetch("http://localhost:5000/tasks");
+    const data = await res.json();
+    
+    return data;
+  }
+
   //Delete Task
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    await fetch(`http://localhost:5000/tasks/${id}`, { method :'DELETE'});
+
     setTasks(tasks.filter((task) => task.id !== id));
   }
 
@@ -34,19 +39,22 @@ const App = () => {
     setTasks(tasks.map((task) => ((task.id === id) ? {...task, reminder:!task.reminder} : task)));
   }
 
-  const toggleAddTaskForm = () => {
-    setShowAddTaskForm(!showAddTaskForm);
-  }
+  const onAdd = async (task) => {
+    const res = await fetch(`http://localhost:5000/tasks`, {
+         method :'POST', 
+         headers:{
+            'Content-Type':'application/json'
+         },
+         body:JSON.stringify(task)
+      });
 
-  const onAdd = (task) => {
-    let id = Math.floor(Math.random()*1000) + 1;
-    let newTask = {id, ...task};
-    setTasks([...tasks,newTask]);
+      const data = await res.json();
+      setTasks([...tasks, data]);
   }
 
   return (
     <div className="container1">
-        <Header color="#fff" showAdd={showAddTaskForm}  bgColor='steelblue' onToggleAdd={toggleAddTaskForm} title='Task Tracker' ></Header>
+        <Header color="#fff" showAdd={showAddTaskForm}  bgColor='steelblue' onToggleAdd={() => setShowAddTaskForm(!showAddTaskForm)} title='Task Tracker' ></Header>
         {showAddTaskForm ? <AddTask onAddTask={onAdd}></AddTask>:''}
         {tasks.length > 0 ? (<Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask}></Tasks>):'No Task to display'}
         <Footer></Footer>
