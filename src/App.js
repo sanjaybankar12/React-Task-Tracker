@@ -5,6 +5,9 @@ import Footer from './components/Footer';
 import AddTask from './components/AddTask';
 import React, {useState, useEffect} from 'react';
 
+import { BrowserRouter as Router, Route, Routes,Outlet } from 'react-router-dom';
+import About from './components/About';
+
 
 const App = () => {
 
@@ -35,7 +38,25 @@ const App = () => {
     setTasks(tasks.filter((task) => task.id !== id));
   }
 
-  const toggleReminder = (id) => {
+   //fetch Task
+   const fetchTask = async (id) => {
+    const task = await fetch(`http://localhost:5000/tasks/${id}`, { method :'GET'});
+    return task.json();
+  }
+
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id);
+    const updateTask = {...taskToToggle, reminder:!taskToToggle.reminder};
+
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+         method :'PUT', 
+         headers:{
+            'Content-Type':'application/json'
+         },
+         body:JSON.stringify(updateTask)
+      });
+
+      const data = await res.json();
     setTasks(tasks.map((task) => ((task.id === id) ? {...task, reminder:!task.reminder} : task)));
   }
 
@@ -53,12 +74,23 @@ const App = () => {
   }
 
   return (
-    <div className="container1">
-        <Header color="#fff" showAdd={showAddTaskForm}  bgColor='steelblue' onToggleAdd={() => setShowAddTaskForm(!showAddTaskForm)} title='Task Tracker' ></Header>
-        {showAddTaskForm ? <AddTask onAddTask={onAdd}></AddTask>:''}
-        {tasks.length > 0 ? (<Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask}></Tasks>):'No Task to display'}
-        <Footer></Footer>
-    </div>
+    <Router>
+      <div className="container1">
+          <Header color="#fff" showAdd={showAddTaskForm}  bgColor='steelblue' onToggleAdd={() => setShowAddTaskForm(!showAddTaskForm)} title='Task Tracker' ></Header>
+          <Routes>
+            <Route  path='/' element={
+              <>
+                {showAddTaskForm ? <AddTask onAddTask={onAdd}></AddTask>:''}
+                {tasks.length > 0 ? (<Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask}></Tasks>):'No Task to display'}
+              </>
+              }
+             />
+            <Route path='about' element={<About/>}/>
+            </Routes>
+          <Footer></Footer>  
+          <Outlet></Outlet>      
+      </div>
+    </Router>
   );
 }
 
